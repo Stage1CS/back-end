@@ -14,19 +14,12 @@ class LivreurController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index_livreur()
     {
-        
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create_livreur()
-    {
-        return view('livreur/formulaire_ajout');
+        //$var = Livreur::all();
+        //return $var->toJson();
+        return Livreur::all();
+        //return Livreur::orderByDesc('created_at')->get();
     }
 
     /**
@@ -37,35 +30,10 @@ class LivreurController extends Controller
      */
     public function store_livreur(Request $request)
     {
-        $request->validate([
-            'nom' => 'required',
-            'prénom' => 'required',
-            'mail' => 'required',
-            'num' => 'required'
-        ]);
-        $data = array(
-            'nom' => $request->nom,
-            'prénom' => $request->prénom,
-            'mail' => $request->mail,
-            'num' => $request->num,
-        );
-
-        $new = livreur::create($request->all());
-        
-        if($new){
-            return response()->jason([
-                'data' =>[
-                    'type' => '',
-                    'message' => 'success',
-                    'id' => $new->id_livreur,
-                    'attributs'=>$new
-                ]
-                ], 201);
-        } else {
+        if (Livreur::create($request->all())) {
             return response()->json([
-                'type' => '',
-                'message' =>'Fail'
-            ], 400);
+                'success' => 'livreur créée avec succès'
+            ], 200);
         }
     }
 
@@ -75,40 +43,40 @@ class LivreurController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show_livreur()
+    public function show_livreur(Livreur $livreur)
     {
-        return view('livreur/chercher');
+        // return livreur::find($livreur->id_livreur);
+        return $livreur; 
     }
 
-    public function show_livreur_nom_choisi(Request $request)
+    public function show_livreur_nom(Request $request)
     {
-        $nom = $request->get('nom');
-        $selct = DB::table ('livreurs')->where('nom', $nom)->get();  
-        //->where ([['niveau', $varNiveau], ['grp', $varGrp]])
-        //$data = DB::table('userquestion')->where('userEmail', '=', auth()->user()->email)->get();
-        return view('livreur/affichage')->with('l', $selct); 
+        $nom = $request->nom;
+        $chercher = livreur::where('nom', $nom)->get();
+        return $chercher->toJson();         
     }
 
-    public function show_livreur_prenom_choisi(Request $request)
+    public function show_livreur_prenom(Request $request)
     {
-        $prenom = $request->get('prénom');
-        $selct = DB::table ('livreurs')->where('prénom', $prenom)->get();  
-        return view('livreur/affichage')->with('l', $selct); 
+        $prenom = $request->prénom;
+        $chercher = livreur::where('prénom', $prenom)->get();
+        return $chercher->toJson(); 
     }
 
-    public function show_livreur_email_choisi(Request $request)
+    public function show_livreur_email(Request $request)
     {
-        $mail = $request->get('mail');
-        $selct = DB::table ('livreurs')->where('mail', $mail)->get();  
-        return view('livreur/affichage')->with('l', $selct); 
+        $mail = $request->mail;
+        $chercher = livreur::where('mail', $mail)->get();
+        return $chercher->toJson(); 
     }
 
-    public function show_livreur_numero_choisi(Request $request)
+    public function show_livreur_numero(Request $request)
     {
-        $num = $request->get('num');
-        $selct = DB::table ('livreurs')->where('num', $num)->get();  
-        return view('livreur/affichage')->with('l', $selct); 
+        $num = $request->num;
+        $chercher = livreur::where('num', $num)->get();
+        return $chercher->toJson(); 
     }
+    
 
     public function get_zones()
     {
@@ -126,19 +94,6 @@ class LivreurController extends Controller
         return view('livreur/affichage')->with('l', $selct); 
     }
 
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit_livreur($id)
-    {
-        $data= livreur::find($id);
-        return view('livreur/edit', ['data'=> $data]);
-    }
-
     /**
      * Update the specified resource in storage.
      *
@@ -146,17 +101,13 @@ class LivreurController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update_livreur(Request $request)
+    public function update_livreur(Request $request, livreur $livreur)
     {
-        $data=livreur::find($request->livreur_id);
-        $data->nom=$request->nom;
-        $data->prénom=$request->prénom;
-        $data->mail=$request->mail;
-        $data->num=$request->num;
-        $zone= DB::table ('zone')->where('nom_zone', $request->zone)->first();
-        $data->id_zone=$zone->id_zone;
-        $data->save();
-        return redirect('dashboard');
+        if ($livreur->update($request->all())) {
+            return response()->json([
+                'success' => 'livreur modifiée avec succès'
+            ], 200);
+        }
     }
 
     /**
@@ -165,10 +116,9 @@ class LivreurController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy_livreur($id)
+    public function destroy_livreur(livreur $livreur)
     {
-        DB::delete('delete from livreurs where id_livreur = ?',[$id]);
-        return redirect('dashboard');
+        $livreur->delete();
     }
 }
 

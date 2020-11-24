@@ -12,11 +12,10 @@ class Livreur extends Model
     protected $table = 'livreurs';
 
     protected $fillable = [
-        'id_livreur',
         'nom',
         'prénom',
         'mail',
-        'nb_ajout',
+        'num',
         'id_zone',
         'updated_at',
         'created_at',
