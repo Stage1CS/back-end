@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LivreurController;
 use App\Http\Controllers\magasinController;
-
+use App\Http\Controllers\ExportImportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +30,10 @@ Route::prefix('/v1')->group(function(){
 
     Route::get('livreur/{livreur}', [LivreurController::class, 'show_livreur']);
 
-    Route::get('livreur', [LivreurController::class, 'show_livreur_nom']);
-    Route::get('livreur', [LivreurController::class, 'show_livreur_prenom']);
-    Route::get('livreur', [LivreurController::class, 'show_livreur_email']);
-    Route::get('livreur', [LivreurController::class, 'show_livreur_numero']);
+    Route::get('livreurNom', [LivreurController::class, 'show_livreur_nom']);
+    Route::get('livreurPrenom', [LivreurController::class, 'show_livreur_prenom']);
+    Route::get('livreurMail', [LivreurController::class, 'show_livreur_email']);
+    Route::get('livreurNum', [LivreurController::class, 'show_livreur_numero']);
     //Route::get('livreur/zone/{id_zone}', [LivreurController::class, 'show_livreur_zone_choisi']);
     
     Route::delete('livreur/{livreur}', [LivreurController::class, 'destroy_livreur']);
@@ -48,7 +48,14 @@ Route::prefix('/v1')->group(function(){
 
     Route::delete('magasin/{magasin}', [magasinController::class, 'destroy_magasin']);
     Route::put('magasin/{magasin}', [LivreurController::class, 'update_magasin']);
-});
+
+    ///////////////// EXPORT - IMPORT //////////////////////////////////////////////////////////////////////////////
+
+    Route::get('export', [ExportImportController::class, 'export']);
+    Route::get('import', [ExportImportController::class, 'import']);
+
+    }
+);
 
 
 
