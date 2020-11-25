@@ -15,12 +15,13 @@ class ExportImportController extends Controller
     */
     public function export() 
     {
-        $var = Excel::download(new livreurExport, 'livreurs.xlsx');
-        if ($var){
+        $file = Excel::download(new livreurExport, 'livreurs.xlsx');
+        if ($file){
             return response()->json([
                 'success' => 'data correctly downloaded',
             ], 200);
         }
+        return $file;
     }
      
     /**
